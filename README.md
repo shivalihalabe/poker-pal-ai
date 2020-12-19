@@ -10,8 +10,8 @@ Install the RLCard package and the supported version of TensorFlow using directi
 
   * Clone PokerPal AI repository
   * Run training files `<nfsp.py>` and `<dqn.py>`
-  * Add model folders with the same names as the training files to folder `<rlcard/pretrained>`
-  * Copy contents of this repository's files `<__init__.py>` and `<pretrained_models.py>` into files of the same name
+  * Add model folders with the same names as the training files to folder `<rlcard/models/pretrained>`
+  * Copy contents of this repository's files `<__init__.py>` and `<pretrained_models.py>` into files of the same name in the `<rlcard/models>` 
   * Run file `<play.py>` to load pre-trained models, play the agents against one another, and evaluate their performance
   
 ## Editable Hyperparameters
