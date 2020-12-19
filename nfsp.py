@@ -1,4 +1,5 @@
-''' An example of learning a NFSP Agent on No-Limit Texas Holdem
+'''
+Training an NFSP Agent to play Limit Texas Holdem
 '''
 
 import tensorflow as tf
@@ -10,26 +11,30 @@ from rlcard.agents import RandomAgent
 from rlcard.utils import set_global_seed, tournament
 from rlcard.utils import Logger
 
-# Make environment
-env = rlcard.make('no-limit-holdem', config={'seed': 0})
-eval_env = rlcard.make('no-limit-holdem', config={'seed': 0})
-
-# Set the iterations numbers and how frequently we evaluate the performance
-evaluate_every = 1000 # evaluate performance of model
-evaluate_num = 1000
-episode_num = 25000 #
-
-# The intial memory size
-memory_init_size = 1000
+# path to save logs and learning curves to
+log_dir = './experiments/limit_holdem_nfsp_result/'
 
 # Train the agent every X steps
 train_every = 64
 
-# The paths for saving the logs and learning curves
-log_dir = './experiments/nolimit_holdem_nfsp_result/'
+# Make environment
+env = rlcard.make('limit-holdem', config={'seed': 0})
+eval_env = rlcard.make('limit-holdem', config={'seed': 0})
 
-# Set a global seed
+# frequency with which we evaluate performance of our model
+evaluate_every = 300 # how often we want to plot the reward on the graph
+evaluate_num = 100 # number of games in the tournament
+episode_num = 30000
+
+# Experiment #
+run = 3
+
+# initial memory allocated
+memory_init_size = 1000
+
+# set global seed
 set_global_seed(0)
+
 
 with tf.Session() as sess:
 
@@ -60,7 +65,13 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
 
     # Init a Logger to plot the learning curve
-    logger = Logger(log_dir + "ep " + str(episode_num))
+    logger = Logger(log_dir + "run" + str(run))
+
+    # Write model parameters in the logger
+    logger.log("memory_init_size: " + str(memory_init_size))
+    logger.log("train_every: " + str(memory_init_size))
+    logger.log("evaluate_every: " + str(evaluate_every))
+    logger.log("episode_num: " + str(episode_num))
 
     for episode in range(episode_num):
 
@@ -73,13 +84,13 @@ with tf.Session() as sess:
 
         # Feed transitions into agent memory, and train the agent
         for i in range(env.player_num):
-            for ts in trajectories[i]:
-                agents[i].feed(ts)
+            for trajectory in trajectories[i]:
+                agents[i].feed(trajectory)
 
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == 0:
-            logger.log_performance(
-                env.timestep, tournament(eval_env, evaluate_num)[0])
+            logger.log_performance(env.timestep, tournament(eval_env, evaluate_num)[0])
+
 
     # Close files in the logger
     logger.close_files()
@@ -88,7 +99,7 @@ with tf.Session() as sess:
     logger.plot('NFSP')
 
     # Save model
-    save_dir = 'models/nolimit_holdem_nfsp'
+    save_dir = 'models/limit_holdem_nfsp/run' + str(run)
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     saver = tf.train.Saver()

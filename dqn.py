@@ -15,9 +15,9 @@ env = rlcard.make('limit-holdem', config={'seed': 0})
 eval_env = rlcard.make('limit-holdem', config={'seed': 0})
 
 # Set the iterations numbers and how frequently we evaluate the performance
-evaluate_every = 100
-evaluate_num = 100
-episode_num = 25000
+evaluate_every = 100 # how often we want to plot the reward on the graph
+evaluate_num = 100  # number of games in the tournament
+episode_num = 10000
 
 # The intial memory size
 memory_init_size = 1000
@@ -30,6 +30,8 @@ log_dir = './experiments/limit_holdem_dqn_result/'
 
 # Set a global seed
 set_global_seed(0)
+
+run = 2
 
 with tf.Session() as sess:
 
@@ -52,7 +54,13 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
 
     # Init a Logger to plot the learning curve
-    logger = Logger(log_dir)
+    logger = Logger(log_dir + "run" + str(run))
+
+    # Write model parameters in the logger
+    logger.log("memory_init_size: " + str(memory_init_size))
+    logger.log("train_every: " + str(memory_init_size))
+    logger.log("evaluate_every: " + str(evaluate_every))
+    logger.log("episode_num: " + str(episode_num))
 
     for episode in range(episode_num):
 
@@ -60,8 +68,8 @@ with tf.Session() as sess:
         trajectories, _ = env.run(is_training=True)
 
         # Feed transitions into agent memory, and train the agent
-        for ts in trajectories[0]:
-            agent.feed(ts)
+        for trajectory in trajectories[0]:
+            agent.feed(trajectory)
 
         # Evaluate the performance. Play with random agents.
         if episode % evaluate_every == 0:
@@ -74,7 +82,7 @@ with tf.Session() as sess:
     logger.plot('DQN')
 
     # Save model
-    save_dir = 'models/limit_holdem_dqn'
+    save_dir = 'models/limit_holdem_dqn/run' + str(run)
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     saver = tf.train.Saver()
