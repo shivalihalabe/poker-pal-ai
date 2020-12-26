@@ -1,6 +1,6 @@
 # PokerPal AI
 
-A poker bot that uses DQN and NFSP reinforcement learning strategies. Utilizes the RLCard reinforcement learning toolkit to simulate Limit Texas Hold'em poker games and train models using DQN and NFSP. Also conducts a tournament between the two trained agents to compare strategy effectiveness.
+A poker bot that uses DQN and NFSP reinforcement learning strategies. Employs the RLCard reinforcement learning toolkit to simulate Limit Texas Hold'em poker games and train models with DQN and NFSP. Also conducts a tournament between the two trained agents to compare strategy effectiveness.
 
 ## Set-Up
 
