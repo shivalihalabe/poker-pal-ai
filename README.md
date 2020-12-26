@@ -22,5 +22,5 @@ Install the RLCard package and the supported version of TensorFlow using directi
   * Number of games in each tournament
   * Number of training episodes
 
-`<play.py>` and `<dqn.py>`
+`<play.py>` and `<dqn.py>`:
   * Number of training episodes
